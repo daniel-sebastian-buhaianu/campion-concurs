@@ -1,49 +1,91 @@
 #include <fstream>
 #define MAX_J 50
-#define MAX_E 1000
+#define MAX_E 250
 using namespace std;
 ifstream citeste("concurs.in");
 ofstream scrie("concurs.out");
-bool a[MAX_J+1][MAX_E+1];
-int nrp[MAX_J];
+int p[MAX_J+1];
 int main()
 {
-	int P;
+	int P, i, nj=0;
+	int e[MAX_J+1][MAX_E], jud[MAX_J];
 	citeste >> P;
-	while (P > 0)
+	for (i = 0; i < P; i++)
 	{
 		int J, E;
 		citeste >> J >> E;
-		a[J][E] = 1;
-		nrp[J]++;
-		P--;
-	}
-	int nrj=0, jud[MAX_J], i;
-	for (i = 1; i <= MAX_J; i++)
-	{
-		if (nrp[i])
-		{
-			jud[nrj++] = i;
-		}
-	}
-	scrie << nrj << endl;
-	for (i = 0; i < nrj; i++)
-	{
-		scrie << nrp[jud[i]] << ' ';
-	}
-	scrie << endl;
-	int j;
-	for (i = 0; i < nrj-1; i++)
-	{
-		for (j = i+1; j < nrj; j++)
-		{
-			if (nrp[jud[i]] < nrp[jud[j]])
-			{
-				swap(jud[i], jud[j]);
-			}
-		}
+		if (p[J] == 0)
+        {
+            jud[nj++] = J;
+            e[J][0] = E;
+        }
+        else
+        {
+            int st = -1, dr = p[J];
+            while (dr-st > 1)
+            {
+                int mij = st + (dr-st)/2;
+                if (e[J][mij] < E)
+                {
+                    st = mij;
+                }
+                else
+                {
+                    dr = mij;
+                }
+            }
+            for (int k = p[J]+1; k > dr; k--)
+            {
+                e[J][k] = e[J][k-1];
+            }
+            e[J][dr] = E;
+        }
+        p[J]++;
 	}
 	citeste.close();
+	scrie << nj << endl;
+	for (i = 0; i < nj; i++)
+    {
+        scrie << p[jud[i]] << ' ';
+    }
+    scrie << endl;
+    for (i = 0; i < nj-1; i++)
+    {
+        for (int j = i+1; j < nj; j++)
+        {
+            if (p[jud[i]] < p[jud[j]])
+            {
+                swap(jud[i], jud[j]);
+            }
+        }
+    }
+    int k1=0, k2=1, j;
+    i = j = 0;
+    do
+    {
+        while (i < p[jud[k1]] && j < p[jud[k2]])
+        {
+            scrie << jud[k1] << ' ' << e[jud[k1]][i] << endl;
+            scrie << jud[k2] << ' ' << e[jud[k2]][j] << endl;
+            i++, j++;
+        }
+        if (j >= p[jud[k2]])
+        {
+            k2++;
+            j = 0;
+        }
+        if (i >= p[jud[k1]])
+        {
+            i = j;
+            k1 = k2;
+            j = 0;
+            k2++;
+        }
+    } while (k2 < nj);
+    if (i < p[jud[k1]])
+    {
+        scrie << jud[k1] << ' ' << e[jud[k1]][i] << endl;
+    }
 	scrie.close();
 	return 0;
 }
