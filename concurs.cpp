@@ -81,8 +81,8 @@ int main()
             j = 0;
             k2++;
         }
-    } while (k2 < nj);
-    if (i < p[jud[k1]])
+    } while (k1 < nj && k2 < nj);
+    if (k1 < nj && i < p[jud[k1]])
     {
         scrie << jud[k1] << ' ' << e[jud[k1]][i] << endl;
     }
