@@ -1,19 +1,19 @@
 #include <fstream>
-#define MAX_J 50
-#define MAX_E 250
+#define JMAX 52
+#define EMAX 502
 using namespace std;
-ifstream citeste("concurs.in");
-ofstream scrie("concurs.out");
-int p[MAX_J+1];
+ifstream f("concurs.in");
+ofstream g("concurs.out");
+int p[JMAX], nj;
 int main()
 {
-	int P, i, nj=0;
-	int e[MAX_J+1][MAX_E], jud[MAX_J];
-	citeste >> P;
+    int P, i;
+    int jud[JMAX], e[JMAX][EMAX];
+	f >> P;
 	for (i = 0; i < P; i++)
 	{
 		int J, E;
-		citeste >> J >> E;
+		f >> J >> E;
 		if (p[J] == 0)
         {
             jud[nj++] = J;
@@ -34,7 +34,7 @@ int main()
                     dr = mij;
                 }
             }
-            for (int k = p[J]+1; k > dr; k--)
+            for (int k = p[J]; k > dr; k--)
             {
                 e[J][k] = e[J][k-1];
             }
@@ -42,13 +42,16 @@ int main()
         }
         p[J]++;
 	}
-	citeste.close();
-	scrie << nj << endl;
-	for (i = 0; i < nj; i++)
+	f.close();
+	g << nj << '\n';
+	for (i = 1; i < JMAX; i++)
     {
-        scrie << p[jud[i]] << ' ';
+        if (p[i])
+        {
+            g << p[i] << ' ';
+        }
     }
-    scrie << endl;
+    g << '\n';
     for (i = 0; i < nj-1; i++)
     {
         for (int j = i+1; j < nj; j++)
@@ -65,8 +68,8 @@ int main()
     {
         while (i < p[jud[k1]] && j < p[jud[k2]])
         {
-            scrie << jud[k1] << ' ' << e[jud[k1]][i] << endl;
-            scrie << jud[k2] << ' ' << e[jud[k2]][j] << endl;
+            g << jud[k1] << ' ' << e[jud[k1]][i] << '\n';
+            g << jud[k2] << ' ' << e[jud[k2]][j] << '\n';
             i++, j++;
         }
         if (j >= p[jud[k2]])
@@ -84,8 +87,8 @@ int main()
     } while (k1 < nj && k2 < nj);
     if (k1 < nj && i < p[jud[k1]])
     {
-        scrie << jud[k1] << ' ' << e[jud[k1]][i] << endl;
+        g << jud[k1] << ' ' << e[jud[k1]][i];
     }
-	scrie.close();
+	g.close();
 	return 0;
 }
